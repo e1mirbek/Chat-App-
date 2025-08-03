@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void disconnect(User user) {
 
-        var storedUser = userRepository.findAllByUsername(user.getUserName());
+        var storedUser = userRepository.findAllByUsername(user.getUsername());
 
         if (storedUser != null && storedUser.getStatus() != Status.ONLINE) {
 
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllByStatus(Status status) {
+    public List<User> findAllByStatus() {
         return userRepository.findAllByStatus(Status.ONLINE);
     }
 
