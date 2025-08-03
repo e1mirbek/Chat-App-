@@ -20,9 +20,10 @@ public class User {
     private Long id;
 
     private String fullName;
-    private String userName;
+    private String username;
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
 }
