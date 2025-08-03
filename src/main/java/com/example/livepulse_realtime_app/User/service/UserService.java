@@ -19,7 +19,7 @@ public interface UserService {
 
     // Возвращает всех пользователей с указанным статусом (ONLINE или OFFLINE)
 
-    List<User> findAllByStatus (Status status);
+    List<User> findAllByStatus ();
 
     // Находит пользователя по имени пользователя (username)
 
