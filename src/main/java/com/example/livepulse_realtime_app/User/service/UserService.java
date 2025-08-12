@@ -1,13 +1,14 @@
 package com.example.livepulse_realtime_app.User.service;
 
-
-import com.example.livepulse_realtime_app.User.entity.Status;
-import com.example.livepulse_realtime_app.User.entity.User;
-import org.springframework.stereotype.Service;
 import java.util.List;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
+
+import com.example.livepulse_realtime_app.User.entity.User;
+
 @Service
-public interface UserService {
+public interface UserService  extends UserDetailsService {
 
     // Сохраняет пользователя в базу данных
 
