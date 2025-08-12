@@ -10,5 +10,6 @@ public class LivePulseApplication {
 		SpringApplication.run(LivePulseApplication.class, args);
 	}
 
+
 }
 
