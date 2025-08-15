@@ -1,4 +1,4 @@
-package com.example.livepulse_realtime_app.User.configuration;
+ package com.example.livepulse_realtime_app.User.configuration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
