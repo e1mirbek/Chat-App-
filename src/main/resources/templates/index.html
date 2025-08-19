@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Добро пожаловать !!! </title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Чат</title>
 </head>
 <body>
+    <div class="chat-container" id="chat-page">
+        <div class="users-list">
+            <div class="user-list-container">
+                <h2>Онлайн пользователи</h2>
+                <ul id="connectedUsers"></ul>
+            </div>
+            <div>
+                <p id="connected-user-fullname"></p>
+                <form th:action="@{/logout}" method="post" class="logout" id="logout">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button type="submit">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+   <script th:src="@{/js/main.js}"></script>
 
 </body>
 </html>
