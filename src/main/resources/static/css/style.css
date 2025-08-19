@@ -1,1 +1,109 @@
 
+
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+
+.chat-container {
+   display: flex;
+   max-width: 100%;
+   min-width: 100%;
+   min-height: 100%;
+   max-height: 100%;
+   margin: 20px;
+   border: 1px solid #ccc;
+   background-color: #fff;
+   overflow: hidden;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+
+.user-list {
+    flex: 1;
+    position: fixed;
+    left: 0;
+    height: 100vh;
+    width: 350px;
+    border-right: 1px solid #ccc;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #001b20;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.user-list-container {
+    height: 100%;
+}
+
+.user-list-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+
+.user-list u {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+.user-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+
+
+.user-item.active {
+    background-color: #cbebff;
+    color: #f4f4f4;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+
+.user-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    filter: invert(1);
+}
+
+
+.user-item.active img {
+    filter: invert(0);
+}
+
+.user-item span {
+    font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
