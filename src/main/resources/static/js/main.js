@@ -73,12 +73,27 @@ function onConnected() {
 }
 
 
-async function findAndDisplayConnectedUsers(params) {
+async function findAndDisplayConnectedUsers() {
+     const connectedUsersResponse = await fetch("/users");
+    let connectedUsers = await connectedUsersResponse.json();
 
-    
+    connectedUsers = connectedUsers.filter(user => user.username !== username);
+    const connectedUserList = document.getElementById('connectedUsers');
+    connectedUserList.innerHTML = '';
+
+    connectedUsers.forEach(user => {
+        appendUserElement(user, connectedUserList);
+        if (connectedUsers.indexOf(user) < connectedUsers.length - 1) {
+            const separator = document.createElement('li');
+            separator.classList.add('separator');
+            connectedUserList.appendChild(separator);
+        }
+    });
 }
 
 function onError() {
+
+
 
 }
 
