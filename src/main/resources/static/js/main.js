@@ -91,6 +91,49 @@ async function findAndDisplayConnectedUsers() {
     });
 }
 
+
+/**
+ * Создаёт и добавляет элемент пользователя в список подключённых.
+ *
+ * @param {Object} user — объект пользователя (например, { username: "john", fullname: "John Doe" }).
+ * @param {HTMLElement} connectedUserList — DOM-элемент <ul> или <ol>, в который будет добавлен пользователь.
+ *
+ * Алгоритм:
+ * 1. Создаём <li> и задаём ему класс "user-item" и id = username.
+ * 2. Добавляем картинку-аватар (src = "../img/user_icon.png").
+ * 3. Добавляем span с полным именем пользователя.
+ * 4. Добавляем span для отображения количества непрочитанных сообщений (изначально = 0 и скрыт).
+ * 5. Вешаем обработчик клика (userItemClick), чтобы при нажатии на пользователя открыть чат.
+ * 6. Вставляем весь элемент в список пользователей.
+ */
+function appendUserElement(user, connectedUserList) {
+    const listItem = document.createElement('li'); // создаём новый <li>
+    listItem.classList.add('user-item');           // задаём класс для стилей
+    listItem.id = user.username;                   // используем username как уникальный id элемента
+
+    const userImage = document.createElement('img'); // создаём аватар
+    userImage.src = "../img/user_icon.png";          // путь к картинке
+    userImage.alt = user.fullname;                   // alt-текст = полное имя
+
+    const usernameSpan = document.createElement('span'); // создаём подпись
+    usernameSpan.textContent = user.fullname;            // отображаем полное имя пользователя
+
+    const receivedMsg = document.createElement('span'); // создаём счётчик сообщений
+    receivedMsg.textContent = '0';                      // начальное значение = 0
+    receivedMsg.classList.add('nbr-msg', 'hidden');     // CSS-классы: "nbr-msg" + скрыт
+
+    // прикрепляем к <li> все элементы по порядку
+    listItem.appendChild(userImage);
+    listItem.appendChild(usernameSpan);
+    listItem.appendChild(receivedMsg);
+
+    // при клике по пользователю — открыть чат
+    listItem.addEventListener('click', userItemClick);
+
+    // добавляем итоговый <li> в список
+    connectedUserList.appendChild(listItem);
+}
+
 function onError() {
 
 
