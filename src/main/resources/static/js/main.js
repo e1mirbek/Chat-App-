@@ -40,38 +40,64 @@ async function fetchCurrentUser()  {
     fullname = user.fullname;
 }
 
-
+// Когда HTML-документ полностью загружен (DOMContentLoaded),
+// сразу получаем данные текущего пользователя и пытаемся подключиться к чату.
 window.addEventListener('DOMContentLoaded', async () =>  {
-    await fetchCurrentUser();
-    if (document.querySelector('#chat-page')) {
-        connect();
+    await fetchCurrentUser(); // запрос на сервер: кто текущий пользователь
+    if (document.querySelector('#chat-page')) { // проверка, существует ли элемент чата на странице
+        connect(); // устанавливаем WebSocket-соединение
     }
 }); 
 
 
-
-
+/**
+ * Функция для подключения к WebSocket (через SockJS + STOMP).
+ * 
+ * 1. Проверяет, что у пользователя есть username и fullname (данные уже загружены).
+ * 2. Создаёт SockJS-соединение по URL `/websocket`.
+ * 3. Оборачивает соединение в STOMP (протокол обмена сообщениями).
+ * 4. Выполняет connect() → при успешном подключении вызывает onConnected(),
+ *    при ошибке подключения вызывает onError().
+ */
 function connect () {
     if (username && fullname) {
-        const socket = new SockJS('/websocket'); // создаём SockJS соединение с сервером по указанному URL.
-        stompClient = Stomp.over(socket);
+        const socket = new SockJS('/websocket'); // создаём WebSocket соединение
+        stompClient = Stomp.over(socket); // оборачиваем его в STOMP
 
         stompClient.connect({}, onConnected, onError); 
     }
 }
 
 
+/**
+ * Действия после успешного подключения к серверу через STOMP.
+ *
+ * 1. Подписываемся на персональную очередь сообщений текущего пользователя.
+ *    ❗ Сейчас у тебя ошибка: строка '/user/${username}/queue/messages' — это строка,
+ *       а не шаблон. Нужно использовать обратные кавычки (`) для подстановки username:
+ *       stompClient.subscribe(`/user/${username}/queue/messages`, onMessageReceived);
+ *
+ * 2. Подписываемся на публичный канал "/user/public".
+ * 3. Отправляем серверу сообщение "пользователь добавлен" (addUser),
+ *    чтобы сервер знал, что этот пользователь онлайн.
+ * 4. Отображаем полное имя текущего пользователя в интерфейсе.
+ * 5. Показываем чат (убираем класс hidden).
+ * 6. Загружаем список подключённых пользователей и отрисовываем его.
+ */
 function onConnected() {
-    stompClient.subscribe('/user/${username}/queue/messages', onMessagereReceived);
+    stompClient.subscribe(`/user/${username}/queue/messages`, onMessagereReceived); // 👈 исправь кавычки!
     stompClient.subscribe('/user/public', onMessagereReceived);
 
-    stompClient.send("/app/chat.addUser", {}, JSON.stringify({username: username, fullname: fullname, status: "ONLINE"}));
+    stompClient.send(
+        "/app/chat.addUser",
+        {},
+        JSON.stringify({ username: username, fullname: fullname, status: "ONLINE" })
+    );
+
     document.querySelector('#connected-user-fullname').textContent = fullname;
-    chatPage.classList.remove('hidden');
-    findAndDisplayConnectedUsers().then();
-
+    chatPage.classList.remove('hidden'); // показываем чат
+    findAndDisplayConnectedUsers().then(); // обновляем список пользователей
 }
-
 
 /**
  * Получает список всех подключённых пользователей с сервера и отображает их в интерфейсе.
