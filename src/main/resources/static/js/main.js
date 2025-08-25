@@ -73,19 +73,37 @@ function onConnected() {
 }
 
 
+/**
+ * Получает список всех подключённых пользователей с сервера и отображает их в интерфейсе.
+ *
+ * Алгоритм:
+ * 1. Отправляем HTTP-запрос на эндпоинт "/users".
+ * 2. Получаем ответ и преобразуем его в JSON (список пользователей).
+ * 3. Убираем из списка текущего пользователя (чтобы он сам себя не видел в списке).
+ * 4. Очищаем список подключённых пользователей в DOM (connectedUsers).
+ * 5. Для каждого пользователя:
+ *    - добавляем его в список через appendUserElement().
+ *    - если это не последний пользователь в списке, вставляем <li> с классом "separator"
+ *      (для визуального разделения между пользователями).
+ */
 async function findAndDisplayConnectedUsers() {
-     const connectedUsersResponse = await fetch("/users");
-    let connectedUsers = await connectedUsersResponse.json();
+    const connectedUsersResponse = await fetch("/users"); // запрос на сервер, получаем всех пользователей
+    let connectedUsers = await connectedUsersResponse.json(); // преобразуем ответ в массив объектов пользователей
 
+    // исключаем текущего пользователя, чтобы он сам себя не видел в списке
     connectedUsers = connectedUsers.filter(user => user.username !== username);
-    const connectedUserList = document.getElementById('connectedUsers');
-    connectedUserList.innerHTML = '';
 
+    const connectedUserList = document.getElementById('connectedUsers'); 
+    connectedUserList.innerHTML = ''; // очищаем список перед повторным рендером
+
+    // перебираем всех пользователей и добавляем их в список
     connectedUsers.forEach(user => {
-        appendUserElement(user, connectedUserList);
+        appendUserElement(user, connectedUserList); // создаём <li> для пользователя
+
+        // если это не последний пользователь в массиве — добавляем разделитель
         if (connectedUsers.indexOf(user) < connectedUsers.length - 1) {
-            const separator = document.createElement('li');
-            separator.classList.add('separator');
+            const separator = document.createElement('li'); 
+            separator.classList.add('separator'); // для стилей (например, линия)
             connectedUserList.appendChild(separator);
         }
     });
