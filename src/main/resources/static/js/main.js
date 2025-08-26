@@ -1,5 +1,7 @@
 'use strict';
 
+const { use } = require("react");
+
 
 const usernamePage = document.querySelector('#username-page');
 const chatPage = document.querySelector('#chat-page');
@@ -178,9 +180,70 @@ function appendUserElement(user, connectedUserList) {
     connectedUserList.appendChild(listItem);
 }
 
+/**
+ * Обработчик клика по пользователю в списке.
+ *
+ * 1. Убирает класс 'active' у всех элементов списка пользователей.
+ * 2. Делает форму для отправки сообщений видимой (убирает класс 'hidden').
+ * 3. Подсвечивает выбранного пользователя (добавляет класс 'active').
+ * 4. Сохраняет ID выбранного пользователя (selectedUserId).
+ * 5. Загружает и отображает историю чата с выбранным пользователем.
+ * 6. Сбрасывает индикатор непрочитанных сообщений (nbr-msg):
+ *    скрывает его и обнуляет счётчик.
+ */
+function userItemClick (event) {
+    // Сбрасываем активное выделение со всех пользователей
+    document.querySelectorAll('.user-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // Показываем форму сообщений
+    messageForm.classList.remove('hidden');
+
+    // Определяем, по какому пользователю кликнули
+    const clickedUser = event.currentTarget;
+    clickedUser.classList.add('active'); // подсветка выбранного
+    selectedUserId = clickedUser.getAttribute('id'); // сохраняем ID
+
+    // Загружаем историю чата с этим пользователем
+    fetchAndDisplayUserChat().then();
+
+    // Сбрасываем индикатор непрочитанных сообщений
+    const nbrMsg = clickedUser.querySelector('.nbr-msg');
+    nbrMsg.classList.add('hidden');
+    nbrMsg.textContent = '0';
+}
+
+
+function displayMessage(senderId, content) {
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add('message');
+    if (senderId == username) {
+        messageContainer.classList.add('sendee');
+    } else {
+        messageContainer.classList.add('received');
+    }
+
+    const message = document.createElement('p');
+    message.textContent = content;
+    messageContainer.appendChild(message);
+    chartArea.appendChild(messageContainer);
+}
+
+async function fetchAndDisplayUserChat () {
+    const userChatResponce = await fetch ('/messages/${username}/${selectedUserId}');
+    const userChat = await userChatResponce.json();
+    chatArea.innerHTML = '';
+    userChat.forEach(chat => {
+        displayMessage(chat.senderId, chat.content);
+    });
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+
+
+
 function onError() {
-
-
 
 }
 
