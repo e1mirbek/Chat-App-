@@ -271,13 +271,48 @@ async function fetchAndDisplayUserChat () {
 }
 
 
-
-
+/**
+ * Обработчик ошибок подключения к WebSocket.
+ *
+ * 1. Устанавливает текстовое сообщение о невозможности подключения.
+ * 2. Меняет цвет текста на красный для визуального выделения ошибки.
+ */
 function onError() {
-
+    connectingElement.textContent = 'Не удалось подключиться к WebSocket';
+    connectingElement.style.color = 'red';
 }
 
+/**
+ * Отправляет сообщение выбранному пользователю через WebSocket.
+ *
+ * 1. Берёт текст из поля ввода (messageInput), убирает лишние пробелы.
+ * 2. Проверяет, что сообщение не пустое и соединение (stompClient) активно.
+ * 3. Формирует объект сообщения (отправитель, получатель, текст, timestamp).
+ * 4. Отправляет сообщение на сервер по адресу '/app/chat'.
+ * 5. Локально отображает отправленное сообщение через displayMessage().
+ * 6. Очищает поле ввода сообщения.
+ * 7. Прокручивает чат вниз к последнему сообщению.
+ * 8. Предотвращает стандартное поведение отправки формы.
+ */
+function sendMessage(event) {
+    const messageContent = messageInput.value.trim();
 
+    if (messageContent && stompClient) {
+        const chatMessage = {
+            senderId: username,
+            recipientId: selectedUserId,
+            content: messageInput.value.trim(),
+            timestamp: new Date()
+        };
+
+        stompClient.send('/app/chat', {}, JSON.stringify(chatMessage));
+        displayMessage(username, messageInput.value.trim());
+        messageInput.value = "";
+    }
+
+    charArea.scrollTop = charArea.scrollHeight;
+    event.preventDefault();
+}
 
 
 
