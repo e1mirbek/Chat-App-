@@ -87,7 +87,7 @@ function connect () {
  * 6. Загружаем список подключённых пользователей и отрисовываем его.
  */
 function onConnected() {
-    stompClient.subscribe(`/user/${username}/queue/messages`, onMessagereReceived); // 👈 исправь кавычки!
+    stompClient.subscribe(`/user/${username}/queue/messages`, onMessageReceived); 
     stompClient.subscribe('/user/public', onMessagereReceived);
 
     stompClient.send(
@@ -312,6 +312,49 @@ function sendMessage(event) {
 
     charArea.scrollTop = charArea.scrollHeight;
     event.preventDefault();
+}
+
+
+/**
+ * Обработчик входящих сообщений из WebSocket.
+ *
+ * 1. Обновляет список подключённых пользователей.
+ * 2. Логирует полученное сообщение в консоль.
+ * 3. Парсит тело сообщения из JSON.
+ * 4. Если открыт чат с отправителем — отображает новое сообщение и
+ *    прокручивает чат вниз.
+ * 5. Если есть выбранный пользователь — подсвечивает его в списке.
+ *    Иначе скрывает форму отправки сообщений.
+ * 6. Если сообщение пришло от пользователя, который не активен:
+ *    - показывает индикатор непрочитанных сообщений (nbr-msg);
+ *    - оставляет счётчик пустым (для подсчёта можно расширить логику).
+ */
+async function onMessageReceived(payload) {
+    await findAndDisplayConnectedUsers();
+
+    console.log("Message received", payload);
+    const message = JSON.parse(payload.body);
+
+    // Если открыт чат с отправителем
+    if (selectedUserId && selectedUserId == message.senderId) {
+        displayMessage(message.senderId, message.content);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    // Подсветка выбранного пользователя или скрытие формы
+    if (selectedUserId) {
+        document.querySelector(`#${selectedUserId}`).classList.add('active');
+    } else {
+        messageForm.classList.add('hidden');
+    }
+
+    // Уведомление о новом сообщении от неактивного пользователя
+    const notificationElement = document.querySelector(`#${message.senderId}`);
+    if (notificationElement && !notificationElement.classList.contains('active')) {
+        const nbrMsgElement = notificationElement.querySelector('.nbr-msg');
+        nbrMsgElement.classList.remove('hidden');
+        nbrMsgElement.textContent = "";
+    }
 }
 
 
