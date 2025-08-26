@@ -248,14 +248,26 @@ function displayMessage(senderId, content) {
     chatArea.appendChild(messageContainer);
 }
 
+/**
+ * Загружает и отображает историю чата с выбранным пользователем.
+ *
+ * 1. Выполняет запрос на сервер по адресу `/messages/{username}/{selectedUserId}`.
+ * 2. Получает и преобразует ответ в JSON (список сообщений).
+ * 3. Очищает область чата перед рендерингом новых сообщений.
+ * 4. Проходит по каждому сообщению и отображает его через displayMessage().
+ * 5. Автоматически прокручивает чат вниз к последнему сообщению.
+ */
 async function fetchAndDisplayUserChat () {
     const userChatResponce = await fetch ('/messages/${username}/${selectedUserId}');
     const userChat = await userChatResponce.json();
-    chatArea.innerHTML = '';
+
+    chatArea.innerHTML = ''; // очищаем область чата
+
     userChat.forEach(chat => {
-        displayMessage(chat.senderId, chat.content);
+        displayMessage(chat.senderId, chat.content); // выводим сообщение
     });
-    chatArea.scrollTop = chatArea.scrollHeight;
+
+    chatArea.scrollTop = chatArea.scrollHeight; // прокрутка вниз
 }
 
 
