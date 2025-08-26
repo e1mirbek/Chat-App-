@@ -215,19 +215,37 @@ function userItemClick (event) {
 }
 
 
+/**
+ * Отображает сообщение в области чата.
+ *
+ * @param {string} senderId - имя пользователя (отправитель сообщения).
+ * @param {string} content - текст сообщения.
+ *
+ * Логика работы:
+ * 1. Создаёт контейнер для сообщения <div>.
+ * 2. Добавляет общий класс "message".
+ * 3. Если сообщение отправил текущий пользователь (senderId === username),
+ *    то сообщение отмечается классом "sendee" (правое выравнивание).
+ *    В противном случае — классом "received" (левое выравнивание).
+ * 4. Создаёт элемент <p>, вставляет в него текст сообщения.
+ * 5. Добавляет <p> в контейнер сообщения.
+ * 6. Добавляет контейнер в область чата (chatArea).
+ */
 function displayMessage(senderId, content) {
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('message');
-    if (senderId == username) {
-        messageContainer.classList.add('sendee');
+
+    if (senderId === username) {
+        messageContainer.classList.add('sendee');   // сообщение от текущего пользователя
     } else {
-        messageContainer.classList.add('received');
+        messageContainer.classList.add('received'); // сообщение от других пользователей
     }
 
     const message = document.createElement('p');
     message.textContent = content;
+
     messageContainer.appendChild(message);
-    chartArea.appendChild(messageContainer);
+    chatArea.appendChild(messageContainer);
 }
 
 async function fetchAndDisplayUserChat () {
