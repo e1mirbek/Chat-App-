@@ -1,6 +1,5 @@
 package com.example.livepulse_realtime_app.User.repository;
 
-
 import com.example.livepulse_realtime_app.User.entity.Status;
 import com.example.livepulse_realtime_app.User.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,8 +10,9 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    List <User> findAllByStatus (Status status);
+    // Найти всех по статусу
+    List<User> findAllByStatus(Status status);
 
-    User findAllByUsername (String username);
-
+    // Найти одного по username
+    User findByUsername(String username);
 }

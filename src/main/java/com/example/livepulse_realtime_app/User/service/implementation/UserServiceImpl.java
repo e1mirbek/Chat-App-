@@ -1,6 +1,5 @@
 package com.example.livepulse_realtime_app.User.service.implementation;
 
-
 import com.example.livepulse_realtime_app.User.entity.Status;
 import com.example.livepulse_realtime_app.User.entity.User;
 import com.example.livepulse_realtime_app.User.repository.UserRepository;
@@ -15,37 +14,30 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findAllByUsername(username);
-        if (user == null) {
-            throw  new UsernameNotFoundException(username);
-        }
-        return user;
-    }
-
     @Autowired
     private UserRepository userRepository;
 
     @Override
-    public void saveUser(User user) {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return user;
+    }
 
+    @Override
+    public void saveUser(User user) {
         user.setStatus(Status.ONLINE);
         userRepository.save(user);
-
     }
 
     @Override
     public void disconnect(User user) {
-
-        var storedUser = userRepository.findAllByUsername(user.getUsername());
-
-        if (storedUser != null && storedUser.getStatus() != Status.ONLINE) {
-
+        var storedUser = userRepository.findByUsername(user.getUsername());
+        if (storedUser != null && storedUser.getStatus() == Status.ONLINE) {
             storedUser.setStatus(Status.OFFLINE);
-
             userRepository.save(storedUser);
-
         }
     }
 
@@ -56,6 +48,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findAllByUsername(username);
+        return userRepository.findByUsername(username);
     }
 }

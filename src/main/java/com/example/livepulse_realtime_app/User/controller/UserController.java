@@ -23,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     @MessageMapping ("/user.addUser")
-    @SendTo("/user/public")
+    @SendTo("/topic/users")
     public User addUser (@Payload User user) {
         User existingUser = userService.findByUsername(user.getUsername());
 
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @MessageMapping ("/user.disconnectUser")
-    @SendTo("/user/public")
+    @SendTo("/topic/users")
     public User disconnectUser (@Payload User user) {
         userService.disconnect(user);
         return user;
@@ -54,11 +54,4 @@ public class UserController {
         String username = authentication.getName();
         return ResponseEntity.ok(userService.findByUsername(username));
     }
-
-
-
-
-
-
-
 }

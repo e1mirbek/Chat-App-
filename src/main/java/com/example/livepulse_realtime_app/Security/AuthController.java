@@ -56,7 +56,7 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(Status.OFFLINE); // при регистрации ставим OFFLINE
         userService.saveUser(user);
-        return "redirectaq              aaqwsqaw1a11й:/login";
+        return "redirect:/login";
     }
 
     // Выход (можно добавить логику смены статуса)

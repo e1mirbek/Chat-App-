@@ -48,17 +48,17 @@ function onConnected() {
     // Личные сообщения
     stompClient.subscribe(`/user/${username}/queue/messages`, onMessageReceived);
 
-    // Публичный канал (исправлено название функции)
+    // Публичный канал
     stompClient.subscribe('/user/public', onMessageReceived);
 
-    // Подписка на обновления списка пользователей (если сервер шлёт на /topic/users)
+    // Подписка на обновления списка пользователей
     stompClient.subscribe('/topic/users', async () => {
         await findAndDisplayConnectedUsers();
     });
 
     // Отправляем серверу "я онлайн"
     stompClient.send(
-        "/app/chat.addUser",
+        "/app/user.addUser",
         {},
         JSON.stringify({ username: username, fullname: fullname, status: "ONLINE" })
     );
@@ -68,6 +68,7 @@ function onConnected() {
 
     findAndDisplayConnectedUsers().then();
 }
+
 
 // --- Получение и отображение списка пользователей ---
 async function findAndDisplayConnectedUsers() {
@@ -190,7 +191,7 @@ function sendMessage(event) {
         messageInput.value = "";
     }
 
-    chatArea.scrollTop = chatArea.scrollHeight; // ✅ исправлено charArea → chatArea
+    chatArea.scrollTop = chatArea.scrollHeight; 
     event.preventDefault();
 }
 
@@ -227,7 +228,7 @@ function onLogout() {
 
     if (stompClient && stompClient.connected) {
         stompClient.send(
-            '/app/user.desconnectUser',
+            '/app/user.disconnectUser',
             {},
             JSON.stringify({ username: username, fullname: fullname, status: "OFFLINE" })
         );
